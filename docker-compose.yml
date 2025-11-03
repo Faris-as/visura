@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-container2
+    restart: always
+    environment:
+      POSTGRES_USER: mes
+      POSTGRES_PASSWORD: kuttipuram
+      POSTGRES_DB: visura
+    ports:
+      - "9896:5432"
+    
+    volumes:
+      - ./postgres_data:/var/lib/postgres/data
