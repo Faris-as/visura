@@ -24,9 +24,13 @@ async def register(user: schemas.LoginCreate, db: Session = Depends(get_db)):
 @router.post("/login", response_model=schemas.LoginResponse)
 async def login(user: schemas.LoginRequest, db:Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, user.email)
-    if not db_user or not verify_password(user.password, db.user.password):
+    if not db_user or not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     
-    return {
-        "message": "Login Successful"
-    }
+    if not db_user.is_active:
+        db_user.is_active = True
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+    
+    return schemas.LoginResponse.model_validate(db_user)
