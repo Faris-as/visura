@@ -1,6 +1,14 @@
 version: '3.8'
-
 services:
+  app:
+    build: ./backend
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    command: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
   postgres:
     image: postgres:15
     container_name: postgres-container2
@@ -14,3 +22,6 @@ services:
     
     volumes:
       - ./postgres_data:/var/lib/postgres/data
+
+volumes:
+  pgdata:

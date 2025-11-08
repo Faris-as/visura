@@ -4,6 +4,7 @@ Pydantic Schema for validation
 from pydantic import BaseModel, Field, EmailStr
 from datetime import datetime
 from typing import Optional
+from .models import RoleEnum
 
 class LoginBase(BaseModel):
     # Base
@@ -18,7 +19,7 @@ class LoginResponse(BaseModel):
     """Login Response"""
     id: int
     is_active: bool
-    is_admin: bool
+    role: RoleEnum
     created_at: datetime
     updated_at: Optional[datetime] = None
     
@@ -29,3 +30,12 @@ class LoginResponse(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+    
+# Token Response for JWT
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: Optional[LoginResponse] = None
+    
+    class Config:
+        from_attributes = True
